@@ -1,6 +1,5 @@
 package com.programmingfree.springservice.controller;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -15,11 +14,18 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.programmingfree.springservice.bom.Address;
 import com.programmingfree.springservice.bom.Person;
+import com.programmingfree.springservice.manager.SpringServiceManager;
 
 @EnableWebMvc
 @RestController
 @RequestMapping("/service/greeting/*")
 public class SpringServiceController{
+	
+	/*public SpringServiceController() {
+		
+		System.out.println("SpringServiceController constructor called....");
+		setServiceManager(new SpringServiceManager());
+	}*/
 	
 	@RequestMapping(value = "/{name}", method = RequestMethod.GET)
 	public String getGreeting(@PathVariable String name) {
@@ -78,4 +84,24 @@ public class SpringServiceController{
 	    success.put("success", true);
 	    return success;
 	}
+	
+	
+	public SpringServiceManager getServiceManager() {
+		
+		if(serviceManager != null){
+			
+			return serviceManager;
+			
+		}else{
+			
+			this.serviceManager = new SpringServiceManager();
+			return serviceManager;
+		}
+	}
+	public void setServiceManager(SpringServiceManager serviceManager) {
+		this.serviceManager = serviceManager;
+	}
+
+
+	private SpringServiceManager serviceManager;
 }
