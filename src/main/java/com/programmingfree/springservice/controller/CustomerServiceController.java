@@ -1,7 +1,16 @@
 package com.programmingfree.springservice.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import com.itextpdf.text.DocumentException;
 import com.programmingfree.springservice.bom.cmm.Customer;
 import com.programmingfree.springservice.manager.CustomerServiceManager;
+import com.programmingfree.utils.pdf.PDFFactoryFile;
 
 @EnableWebMvc
 @RestController
@@ -42,7 +53,35 @@ public class CustomerServiceController{
 		return getServiceManager().deleteCustomer(id);
 	}
 	
+	@RequestMapping(value="/getpdfForInput", method=RequestMethod.POST)
+	public ResponseEntity<byte[]> getPDFFromInput() throws IOException, DocumentException {
+	   
+	    byte[] contents = null;
+	     ByteArrayOutputStream byteArrayOutputStream =PDFFactoryFile.createPdfFile(getServiceManager().getCustomers());
+	     contents = byteArrayOutputStream.toByteArray();
+	     HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.parseMediaType("application/pdf"));
+	    String filename = "output.pdf";
+	    headers.setContentDispositionFormData(filename, filename);
+	    headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+	    ResponseEntity<byte[]> response = new ResponseEntity<byte[]>(contents, headers, HttpStatus.OK);
+	    return response;
+	}
 	
+	@RequestMapping(value="/getpdf", method=RequestMethod.GET)
+	public ResponseEntity<byte[]> getPDF() throws IOException, DocumentException {
+	   
+	    byte[] contents = null;
+	     ByteArrayOutputStream byteArrayOutputStream =PDFFactoryFile.createPdfFile(getServiceManager().getCustomers());
+	     contents = byteArrayOutputStream.toByteArray();
+	     HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.parseMediaType("application/pdf"));
+	    String filename = "output.pdf";
+	    headers.setContentDispositionFormData(filename, filename);
+	    headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+	    ResponseEntity<byte[]> response = new ResponseEntity<byte[]>(contents, headers, HttpStatus.OK);
+	    return response;
+	}
 	public CustomerServiceManager getServiceManager() {
 		
 		if(this.customerServiceManager != null){
