@@ -6,8 +6,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.programmingfree.springservice.bom.cmm.Customer;
@@ -34,12 +37,31 @@ public class PDFFactoryFile {
 	        document.close();
 	    }
 	    
-	    public static ByteArrayOutputStream createPdfFile(List<Customer> customers) throws IOException, DocumentException {
+	    public static ByteArrayOutputStream createPdfFile(List<Customer> customers, String period, String fromDate, String toDate) throws IOException, DocumentException {
 	    	ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 	        Document document= new Document();
 			try {
 				PdfWriter.getInstance(document, byteArrayOutputStream);
 				document.open();
+				PdfPTable table1 = new PdfPTable(3);
+				PdfPCell periodCell = new PdfPCell();
+				periodCell.setBorder(Rectangle.NO_BORDER);
+				periodCell.addElement(new Chunk("Period :"+period));
+				table1.addCell(periodCell );
+				
+				PdfPCell fromDateCell = new PdfPCell();
+				fromDateCell.setBorder(Rectangle.NO_BORDER);
+				fromDateCell.addElement(new Chunk("From Date :"+fromDate));
+				table1.addCell(fromDateCell );
+				
+				PdfPCell toDateCell = new PdfPCell();
+				toDateCell.setBorder(Rectangle.NO_BORDER);
+				toDateCell.addElement(new Chunk("To Date :"+toDate));
+				table1.addCell(toDateCell );
+				
+				table1.setSpacingAfter(30f);
+				document.add(table1);
+				
 				PdfPTable table = new PdfPTable(5);
 				/*for(int aw = 0; aw < 16; aw++){
 				    table.addCell("hi");

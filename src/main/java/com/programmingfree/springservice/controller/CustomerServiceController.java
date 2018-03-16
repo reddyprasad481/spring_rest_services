@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -54,10 +55,11 @@ public class CustomerServiceController{
 	}
 	
 	@RequestMapping(value="/getpdfForInput", method=RequestMethod.POST)
-	public ResponseEntity<byte[]> getPDFFromInput() throws IOException, DocumentException {
+	public ResponseEntity<byte[]> getPDFFromInput(@RequestParam("period") String period,
+			@RequestParam("fromDate") String fromDate,@RequestParam("toDate") String toDate) throws IOException, DocumentException {
 	   
 	    byte[] contents = null;
-	     ByteArrayOutputStream byteArrayOutputStream =PDFFactoryFile.createPdfFile(getServiceManager().getCustomers());
+	     ByteArrayOutputStream byteArrayOutputStream =PDFFactoryFile.createPdfFile(getServiceManager().getCustomers(),period,fromDate,toDate);
 	     contents = byteArrayOutputStream.toByteArray();
 	     HttpHeaders headers = new HttpHeaders();
 	    headers.setContentType(MediaType.parseMediaType("application/pdf"));
@@ -69,10 +71,11 @@ public class CustomerServiceController{
 	}
 	
 	@RequestMapping(value="/getpdf", method=RequestMethod.GET)
-	public ResponseEntity<byte[]> getPDF() throws IOException, DocumentException {
+	public ResponseEntity<byte[]> getPDF(@RequestParam("period") String period,
+			@RequestParam("fromDate") String fromDate,@RequestParam("toDate") String toDate) throws IOException, DocumentException {
 	   
 	    byte[] contents = null;
-	     ByteArrayOutputStream byteArrayOutputStream =PDFFactoryFile.createPdfFile(getServiceManager().getCustomers());
+	     ByteArrayOutputStream byteArrayOutputStream =PDFFactoryFile.createPdfFile(getServiceManager().getCustomers(),period,fromDate,toDate);
 	     contents = byteArrayOutputStream.toByteArray();
 	     HttpHeaders headers = new HttpHeaders();
 	    headers.setContentType(MediaType.parseMediaType("application/pdf"));
